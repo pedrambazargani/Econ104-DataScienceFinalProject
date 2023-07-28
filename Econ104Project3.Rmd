@@ -1,0 +1,482 @@
+---
+title: "Econ 104 Project 3"
+author: "Pedram Bazargani"
+date: '2022-12-03'
+output: pdf_document
+---
+Data description:
+Data Set contains Cost Data for U.S. Airlines, 90 Observations On 6 Firms For 15 Years, 1970-1984.
+Using the data, which contains information about the variables: Airline, Year, Q (output in revenue passenger miles), PF (Fuel price),
+LF (Load factor, the average capacity utilization of the fleet), we try to answer the following question:
+
+Source: https://www.kaggle.com/datasets/sandhyakrishnan02/paneldata?resource=download
+
+```{r}
+# loading data for question 1:
+airline_data <- read.csv("PanelData.csv")
+head(airline_data)
+```
+
+```{r}
+names(airline_data)
+```
+## Question 1, Part 1:
+```{r}
+summary(airline_data)
+ls(airline_data)
+```
+Looking at the summary output, there exists tight ranges for most of the variables with roughly normalized distributions or skewed right distributions. This can be attributed to the different airlines and how their cost structures evolved over time with some most likely having lower cost bases irrelevant to other variables. They could also be more sensitive to change. It seems that although most airlines have similar prices in market-determined variables like Fuel Price, Cost can still vary drastically.
+
+### Q: Output in revenue passenger miles
+```{r}
+x <- airline_data$Q
+
+#Histogram
+h <- hist(x, breaks=10, col="red", main="Histogram with Normal Curve")
+
+#Boxplot
+boxplot(unlist(airline_data$Q), xlab="Revenue Passenger Miles")
+plot(airline_data$C~airline_data$Q)
+
+#scatterplot
+meannum = mean(airline_data$Q,rm.na=TRUE)
+sdnum = sd(airline_data$Q)
+d <- seq(from=min(airline_data$Q),to=max(airline_data$Q),by=0.1)
+plot(x =d,y=dnorm(d,meannum,sdnum),lty=2,col=2,type="l")
+```
+
+Comments:
+For our x variable, Q, which denotes Output in Revenue Passenger Miles, Histogram with a normal curve, we found that our variable’s frequency peaks at approximately 35 and is centered between 0 and .25, with a majority of the variable being centered between 0 and .5. In our fitted distribution, we found that a majority of our variable is centered around 0 to 1.5, then plateaus downward around 1.5. Our dnorm (d, meannum, sdnum) peaks at around 0.07. Looking more specifically at our histogram, it appears to be skewed right with most of the data centered at the bottom end. Looking at our boxplot, the Q data has a median of .305 and a mean of .545 with no outliers shown. In our scatterplot, there exists a strong positive correlation between Cost and Revenue Passenger Miles. We run it against cost as that is our response variable.
+
+### Fuel Price
+```{r}
+x2 <- airline_data$PF
+h <- hist(x2, breaks=10, col="red", main="Histogram with Normal Curve")
+boxplot(unlist(airline_data$PF), xlab="Fuel Price")
+plot(airline_data$C~airline_data$PF)
+
+meannum = mean(airline_data$PF,rm.na=TRUE)
+sdnum = sd(airline_data$PF)
+d <- seq(from=min(airline_data$PF),to=max(airline_data$PF),by=0.1)
+plot(x =d,y=dnorm(d,meannum,sdnum),lty=2,col=2,type="l")
+```
+
+Comments:
+For our x variable, PF, which denotes Fuel Price, Histogram with a normal curve, we found that our variable’s frequency peaks at approximately 30 and is centered between 0 and 2x10^5, with a majority of the variable being centered between 0 and 4x10^5. In our fitted distribution, we found that a majority of our variable is centered around 0 to 4x10^5, then plateaus downward around 1x10^6. Our dnorm (d, meannum, sdnum) peaks at around 1.2x10^6. Looking more specifically at our histogram, the data is divided in two showing us a distinct bimodal distribution. This is probably due to fixed differences in Fuel Price for each airline. Looking at our boxplot, the PF data has a median of 357,434 and a mean of 471,683 with no outliers shown. Due to the distinct bimodal distribution, it makes sense that our boxplot looks to be normally distributed. In our scatterplot, there exists a range of correlations as each airline probably has differing factors when it comes to cost outside of fuel price. The general trend however is that as Fuel Price rises so does Cost. We run it against cost as that is our response variable.
+
+### LF: Load factor, or average capacity utilization of the fleet
+```{r}
+x3 <- airline_data$LF
+h <- hist(x3, breaks=10, col="red", main="Histogram with Normal Curve")
+boxplot(unlist(airline_data$LF), xlab="Load Factor")
+plot(airline_data$C~airline_data$LF)
+
+
+meannum = mean(airline_data$LF,rm.na=TRUE)
+sdnum = sd(airline_data$LF)
+d <- seq(from=min(airline_data$LF),to=max(airline_data$LF),by=0.1)
+plot(x =d,y=dnorm(d,meannum,sdnum),lty=2,col=2,type="l")
+```
+
+Comments:
+For our x variable, LF, histogram which denotes Load factor or the average capacity utilization of the fleet, we found that our variable’s frequency peaks at approximately 15 and is centered between .5 and .6, with a majority of the variable being centered between .45 and .65. In our fitted distribution, we found that a majority of our variable is centered around .3 to .6, then plateaus downward around .65. Our dnorm (d, meannum, sdnum) peaks at around 6. Looking more specifically at our histogram, it appears to be distributed normally with an even distribution of data above and below the highest concentration. Looking at our boxplot, the LF data has a median of .567 and a mean of .561 with no outliers shown and a normal distribution. In our scatterplot, there exists a weak positive correlation between the Cost and Load factor. As the Load Factor increases so does Cost to a small degree. We run it against cost as that is our response variable.
+
+### C: Total costs in $1000s:
+```{r}
+x4 <- airline_data$C
+h <- hist(x4, breaks=10, col="red", main="Histogram with Normal Curve")
+boxplot(unlist(airline_data$Q), xlab="Total Cost")
+plot(airline_data$T~airline_data$C)
+
+meannum = mean(airline_data$C,rm.na=TRUE)
+sdnum = sd(airline_data$C)
+d <- seq(from=min(airline_data$C),to=max(airline_data$C),by=0.1)
+plot(x =d,y=dnorm(d,meannum,sdnum),lty=2,col=2,type="l")
+```
+
+Comments:
+For our x variable, C, which denotes Total Cost in $1000s, Histogram with a normal curve, we found that our variable’s frequency peaks at approximately 35 and is centered between 0 and 2x10^6, with a majority of the variable being centered between 0 and 4x10^6. In our fitted distribution, we found that a majority of our variable is centered around 0 to 1x10^6, then plateaus downward around 4x10^6. Our dnorm (d, meannum, sdnum) peaks at around 3x10^-7. Looking more specifically at our histogram, it appears to be skewed right with most of the data center at the bottom end. Looking at our boxplot, the C data has a median of 637001 and a mean of 1122524 with no outliers shown. In our scatterplot, as C is the response variable we can see the varying costs associated with each different airline over time. Some airlines experience drastically differing Costs as time went on and that progression is shown in the scatterplot.
+
+### Correlation Heatmaps:
+```{r}
+library(pheatmap)
+airline_heatmap <- airline_data[ ,c(3,4,5,6)]
+matrix=cor(airline_heatmap)
+write.table(matrix,"coefficient_matrix.txt",sep="\t")
+pheatmap(matrix,cluster_rows=F,cluster_cols=F,display_numbers=T)
+```
+
+Based on the Heatmap, we can get an idea of the correlation between each of the variables. As evident, most of the variables either have a strong positive correlation or a weak positive correlation. Intuitively, each of these variables should have a degree of correlation as they are strongly related to overall costs. PF and LF have a lower correlation most likely due to extraneous factors that differ from airline to airline and change the bottom line.
+
+
+## Question 1, Part 3:
+```{r}
+#POOLED MODEL
+
+library(readr)
+library(plm) # Linear Models for Panel Data
+library(AER)
+library(coefplot)
+
+
+airline_data <- read_csv("PanelData.csv")
+head(airline_data)
+
+dim(airline_data)
+
+mreg.pooled <- plm(C ~ Q + PF + LF, data=airline_data, model="pooling")
+summary(mreg.pooled)
+
+coefplot(mreg.pooled, title="Pooled Model")
+```
+
+In our Pooled Model, we have an R-Squared Value of 0.94609 and a small p-value of 2.22e-16.
+
+In our coefficient plot for the Pooled Model, our confidence interval of our variable LF is centered at approximately -3.1e+06, with our first lag values in between approximately -3.8e+06 to -2.2e+06, and our second lag values stretching from -4.3e+06 to -1.3e+06. Our PF variable is at 0. Our Q variable is centered around 3.1e+06 with first lag values between 1.9e+06 to 2.1e+06. Our intercept value is centered around 1.1e+06 with first lag values from 0.8e+06 to 1.3e+06. Our second lag values range from 0.5e+06 to 1.9e+06.
+
+```{r}
+# FIXED EFFECTS MODEL
+mreg.fixed <- plm(C ~ Q + PF + LF, data = airline_data, model="within")
+summary(mreg.fixed)
+
+coefplot(mreg.fixed, title="Fixed Effects Model")
+
+# In our Fixed Effects Model, we have an R-Squared value of 0.92937 and a small p-value of 2.22e-16.
+
+# In our coefficient plot for the Fixed Effects Model, our confidence interval of our variable LF is centered at approximately -3.9e+06. Our PF variable is at 0, and our Q variable is centered around 3.1e+06.
+```
+
+```{r}
+#RANDOM EFFECTS MODEL
+mreg.random <- plm(C ~ Q + PF + LF, data= airline_data, model="random")
+summary(mreg.random)
+
+coefplot(mreg.random, title="Random Effects Model")
+
+
+# In our Random Effects Model, we have an R-Squared value of 0.91129 and a small p-value of 2.22e-16
+# In our Random Effects Model plot for the Fixed Effects Model our confidence interval of our variable LF is centered at approximately -2550000. Our PF variable is at 0. Our Q variable is centered around 2400000. Our Intercept is centered around 1200000.
+```
+
+```{r, error=TRUE}
+#Joint F Test between Pooled and Fixed Effects Models
+pFtest(mreg.fixed, mreg.pooled)
+#Since F>p-value, we reject the null hypothesis that the Pooled Model is better and conclude that the Fixed Effects Model is our preferred model.
+#Hausman Test between Fixed and Random Effects Models
+phtest(mreg.fixed, mreg.random)
+
+#p-value is small, so we would reject the null that the Random Effects Model is better and conclude that the Fixed Effects Model our preferred model.
+
+```
+
+Conclusions:
+Thus, after running all three models on the given panel data, we concluded using Hausman tests and joint F-tests that the Fixed Effects Model is our preferred model.
+
+
+## Question 2
+
+Data description: This is a data set consisting of features for tracks fetched using Spotify's Web API. The tracks are labeled '1' or '0' ('Hit' or 'Flop') depending on some criteria of the author.
+This data set can be used to make a classification model that predicts whether a track would be a 'Hit' or not.
+Out of all the variables available we decided to us energy, key, loudness, duration_ms, and chorus_hit as the dependent variables based on a purely qualitative analysis.
+
+Source: https://www.kaggle.com/datasets/theoverman/the-spotify-hit-predictor-dataset
+
+
+```{r}
+spotify_data_orginal <- read.csv("Econ104_Project3_datafile_spotify.csv")
+```
+
+```{r}
+head(spotify_data_orginal)
+names(spotify_data_orginal)
+```
+```{r}
+# loading the data
+spotify_data <- data.frame(spotify_data_orginal[, c(1, 2, 5, 6, 7, 15, 17, 19)])
+```
+
+```{r}
+# checking if data has been loading correctly
+names(spotify_data)
+```
+
+## Question 2, Part 1:
+
+Duration: This variable measures the length of a track in milliseconds
+```{r}
+#Histogram:
+Duration <- spotify_data$duration_ms
+Duration <- hist(Duration, breaks=25, col="red", main="Histogram with Normal Curve", xlim = c(0, 750000))
+```
+
+Comments:
+For our x variable, Duration, Histogram with a normal curve, we found that our variable’s frequency peaks at approximately 2x10^5 with a frequency of over 2500. This variable appears to be approximately normal in distribution
+
+```{r}
+#Fitted Distribution:
+meannum = mean(spotify_data$duration_ms,rm.na=TRUE)
+sdnum = sd(spotify_data$duration_ms)
+duration <- seq(from=min(spotify_data$duration_ms),to=max(spotify_data$duration_ms),by= 0.1)
+plot(x =duration,y=dnorm(duration,meannum,sdnum),lty=2,col=2,type="l")
+```
+
+Comments:
+In our fitted distribution, we found that a majority of our variable is centered around 100000 to 400000. Our dnorm (d, meannum, sdnum) peaks at around 4x10^-6
+
+```{r}
+#Boxplot:
+Duration <- spotify_data$duration_ms
+boxplot(unlist(Duration), ylim = c(0, 500000), xlab="Duration")
+```
+
+Comments:
+The min of the plot is 1x10^5 and the max is 4x10^5, the interquartile range is approximately 2.0x10^5 to 2.6x10^5 and the median is approximately 2.3x10^5
+
+```{r}
+#Scatterplot:
+Duration <- spotify_data$duration_ms
+Target <- spotify_data$target
+plot(Target~unlist(Duration))
+```
+
+Comments:
+Since the scatterplot must run the variable 'Duration' against the independent variable, but the independent variable is binary, it does not convey any meaningful information
+
+```{r}
+#Five-number Summary:
+Duration <- spotify_data$duration_ms
+fivenum(Duration)
+```
+
+Energy - Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity
+
+```{r}
+#Histogram:
+Energy <- spotify_data$energy
+Energy <- hist(Energy, breaks=10, col="blue", main="Histogram with Normal Curve")
+```
+
+Comments:
+For our x variable, Energy, Histogram with a normal curve, we found that our variable’s frequency peaks as it approaches 1 with over 1000 observations. This would imply that it is right distributed, but due to the nature of our data, we do not need to correct for this
+
+```{r}
+#Fitted Distribution:
+energy <- spotify_data$energy
+meannum = mean(spotify_data$energy,rm.na=TRUE)
+sdnum = sd(spotify_data$energy)
+duration <- seq(from=min(spotify_data$energy),to=max(spotify_data$energy),by= 0.1)
+plot(x =energy,y=dnorm(energy,meannum,sdnum),lty=2,col=2,type="l")
+```
+
+Comments:
+In our fitted distribution, we found that a majority of our variable is centered around 0.4 to 0.8 Our dnorm (d, meannum, sdnum) peaks at over 1.5
+
+```{r}
+#Boxplot:
+Energy <- spotify_data$energy
+boxplot(unlist(energy), xlab="energy")
+```
+
+Comments:
+The min of the plot is 0.1 and the max is 1, the interquartile range is ~0.4 and the median is approximately 0.7
+
+```{r}
+#Scatterplot:
+Energy <- spotify_data$energy
+Target <- spotify_data$target
+plot(Target~Energy)
+```
+
+Comments:
+Since the scatterplot must run the variable 'Energy' against the independent variable, but the independent variable is binary, it does not convey any meaningful information
+
+```{r}
+#Five-number Summary:
+energy <- spotify_data$energy
+fivenum(energy)
+```
+
+Key -  This variable is the key of the track
+
+```{r}
+#Histogram:
+Key <- spotify_data$key
+Key <- hist(Key, breaks=12, col="green", main="Histogram with Normal Curve")
+```
+
+Comments:
+For our x variable, Key, Histogram with a normal curve, we found that our variable’s frequency peaks at approximately 1 with a frequency of approximately 1500. It is evident that this variable is left skewed, however given the nature of the data, that is not a problem for us.
+
+```{r}
+#Fitted Distribution:
+key <- spotify_data$key
+meannum = mean(spotify_data$key,rm.na=TRUE)
+sdnum = sd(spotify_data$key)
+key <- seq(from=min(spotify_data$key),to=max(spotify_data$key),by= 0.1)
+plot(x =key,y=dnorm(key,meannum,sdnum),lty=2,col=2,type="l")
+```
+
+Comments:
+In our fitted distribution, we found that a majority of our variable is centered around 4 to 6. Our dnorm (d, meannum, sdnum) peaks at around 0.1
+
+```{r}
+#Boxplot:
+key <- spotify_data$key
+boxplot(unlist(key), xlab="key")
+```
+
+The min of the plot is 0 and the max is 12, the interquartile range is 6 and the median is 5.
+
+```{r}
+#Scatterplot:
+key <- spotify_data$key
+Target <- spotify_data$target
+plot(Target~unlist(key))
+```
+
+Comments:
+Since the scatterplot must run the variable 'Key' against the independent variable, but the independent variable is binary, it does not convey any meaningful information
+
+```{r}
+#Five-number Summary:
+key <- spotify_data$key
+fivenum(key)
+```
+
+Chorus_hit - This is the author's best estimate of when the chorus would start for the track. It's the timestamp of the start of the third section of the track.
+
+```{r}
+#Histogram:
+Chorus <- spotify_data$chorus_hit
+Chorus <- hist(Chorus, breaks=10, col="yellow", xlim = c(0,150), main="Histogram with Normal Curve")
+```
+
+Comments:
+For our x variable, Chorus, Histogram with a normal curve, we found that our variable’s frequency peaks at approximately 30-40 with a frequency of approximately 3500. It appears to be slightly left skewed.
+
+```{r}
+#Fitted Distribution:
+chorus <- spotify_data$chorus_hit
+meannum = mean(spotify_data$chorus_hit,rm.na=TRUE)
+sdnum = sd(spotify_data$chorus_hit)
+chorus <- seq(from=min(spotify_data$chorus_hit),to=max(spotify_data$chorus_hit),by= 0.1)
+plot(x =chorus,y=dnorm(chorus,meannum,sdnum),lty=2,col=2,type="l")
+```
+
+Comments:
+In our fitted distribution, we found that a majority of our variable is centered around 50. Our dnorm (d, meannum, sdnum) peaks at around 0.02
+
+```{r}
+#Boxplot:
+chorus <- spotify_data$chorus_hit
+boxplot(unlist(chorus), xlab="chorus")
+```
+
+Comments:
+The min of the plot is 0 and the max is ~80, the interquartile range is ~20and the median is approximately 40
+
+```{r}
+#Scatterplot:
+chorus <- spotify_data$chorus_hit
+Target <- spotify_data$target
+plot(Target~unlist(chorus))
+```
+
+Comments:
+Since the scatterplot must run the variable 'Chorus' against the independent variable, but the independent variable is binary, it does not convey any meaningful information
+
+```{r}
+#Five-number Summary:
+chorus <- spotify_data$chorus_hit
+fivenum(chorus)
+```
+Loudness - The loudness of the track in decibels
+
+```{r}
+#Histogram:
+loudness <- spotify_data$loudness
+loudness <- hist(loudness, breaks=10, col="magenta", main="Histogram with Normal Curve")
+```
+
+Comments:
+For our x variable, Loudness, Histogram with a normal curve, we found that our variable’s frequency peaks at approximately 5-10 with a frequency of over 3000 It is evident that this variable is right skewed, however given the nature of the data, that is not a problem for us.
+
+```{r}
+#Fitted Distribution:
+loudness <- spotify_data$loudness
+meannum = mean(spotify_data$chorus_hit,rm.na=TRUE)
+sdnum = sd(spotify_data$loudness)
+loudness <- seq(from=min(spotify_data$loudness),to=max(spotify_data$loudness),by= 0.1)
+plot(x =loudness,y=dnorm(loudness,meannum,sdnum),lty=2,col=2,type="l")
+```
+
+Comments:
+In our fitted distribution, we found that a majority of our variable is centered around 0. Our dnorm (d, meannum, sdnum) peaks at around 3x10^-15
+
+```{r}
+#Boxplot:
+loudness <- spotify_data$loudness
+boxplot(unlist(loudness), xlab="loudness",ylim = c(0,-15))
+```
+
+Comments:
+The min of the plot is 0 and the max is 14, the interquartile range is 3 and the median is approximately 6
+
+```{r}
+#Scatterplot:
+loudness <- spotify_data$loudness
+Target <- spotify_data$target
+plot(Target~unlist(loudness))
+```
+
+Comments:
+Since the scatterplot must run the variable 'Loudness' against the independent variable, but the independent variable is binary, it does not convey any meaningful information
+
+```{r}
+#Five-number Summary:
+loudness <- spotify_data$loudness
+fivenum(loudness)
+```
+
+```{r}
+#Correlation
+library(pheatmap)
+spotify_heatmap <- spotify_data_orginal[ ,c(5,6,7,15,17)]
+matrix=cor(spotify_heatmap)
+write.table(matrix,"coefficient_matrix.txt",sep="\t")
+pheatmap(matrix,cluster_rows=F,cluster_cols=F,display_numbers=T)
+
+```
+
+
+
+## Question 2, Part 3:
+
+(a) Linear probability model:
+
+```{r}
+#running the linear probability model
+lpm_spotify <- lm(target ~ energy + key + loudness + duration_ms + chorus_hit, data = spotify_data)
+summary(lpm_spotify)
+```
+
+This shows that in our linear model, our coefficients show that energy, loudness, duration, and chorus_hit are significant in determining whether or not a song is a hit, and this 21.9% of the dependent variable outcomes are explained by this model.
+
+```{r}
+# running the probit model:
+probit_spotify <- glm(target ~ energy + key + loudness + duration_ms + chorus_hit, family=binomial(link="probit"),
+data = spotify_data)
+
+summary(probit_spotify)
+```
+
+```{r}
+# running the logit model:
+logit_spotify <- glm(target ~ energy + key + loudness + duration_ms + chorus_hit, family=binomial(link="logit"),
+data = spotify_data)
+
+summary(logit_spotify)
+```
+
+Conclusion:
+The logit model has a lower AIC than the probit model, and thus it explains the data better than the probit model.
